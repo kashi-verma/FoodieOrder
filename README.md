@@ -1,20 +1,11 @@
-# Welcome to your Lovable project
+# Welcome to project Spice-Nut
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/382fcfac-ca8d-4893-8cf0-44d39eb07094
+This is a fully responsive and scalable frontend web application developed using modern technologies such as React, TypeScript, Vite, Tailwind CSS, and shadcn-ui. It offers a high-performance development experience with fast build times and instant preview capabilities.
 
-## How can I edit this code?
+The project is structured to support both local development and remote collaboration. Developers can easily clone the repository, install dependencies with npm, and launch a development server using npm run dev. The setup ensures live reloading and a smooth developer workflow.
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/382fcfac-ca8d-4893-8cf0-44d39eb07094) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
@@ -36,20 +27,6 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
 ## What technologies are used for this project?
 
 This project is built with:
@@ -60,9 +37,7 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/382fcfac-ca8d-4893-8cf0-44d39eb07094) and click on Share -> Publish.
 
 ## Can I connect a custom domain to my Lovable project?
 
