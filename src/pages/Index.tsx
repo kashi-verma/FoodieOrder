@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -63,21 +62,21 @@ const Index = () => {
             <div className="text-center p-4 border rounded-lg">
               <h3 className="font-semibold text-lg mb-2 text-red-600">Admin</h3>
               <p className="text-sm text-gray-600 mb-2">admin@example.com</p>
-              <p className="text-sm text-gray-600">password</p>
+              <p className="text-sm text-gray-600">admin123</p>
               <p className="text-xs text-gray-500 mt-2">Full access to all features</p>
             </div>
             
             <div className="text-center p-4 border rounded-lg">
               <h3 className="font-semibold text-lg mb-2 text-blue-600">Manager</h3>
               <p className="text-sm text-gray-600 mb-2">manager.india@example.com</p>
-              <p className="text-sm text-gray-600">password</p>
+              <p className="text-sm text-gray-600">manager123</p>
               <p className="text-xs text-gray-500 mt-2">Can checkout & pay</p>
             </div>
             
             <div className="text-center p-4 border rounded-lg">
               <h3 className="font-semibold text-lg mb-2 text-green-600">Member</h3>
               <p className="text-sm text-gray-600 mb-2">member.india@example.com</p>
-              <p className="text-sm text-gray-600">password</p>
+              <p className="text-sm text-gray-600">member123</p>
               <p className="text-xs text-gray-500 mt-2">Can browse & add to cart</p>
             </div>
           </div>

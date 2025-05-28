@@ -36,10 +36,40 @@ const mockRestaurants: Restaurant[] = [
     rating: 4.5,
     deliveryTime: '30-45 min',
     country: 'india',
-    image: '/placeholder.svg',
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
     menu: [
-      { id: '1', name: 'Butter Chicken', price: 299, description: 'Creamy tomato-based curry', image: '/placeholder.svg', category: 'Main Course' },
-      { id: '2', name: 'Biryani', price: 199, description: 'Aromatic rice with spices', image: '/placeholder.svg', category: 'Main Course' },
+      { 
+        id: '1', 
+        name: 'Butter Chicken', 
+        price: 299, 
+        description: 'Creamy tomato-based curry with tender chicken pieces', 
+        image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=300&h=200&fit=crop', 
+        category: 'Main Course' 
+      },
+      { 
+        id: '2', 
+        name: 'Chicken Biryani', 
+        price: 199, 
+        description: 'Aromatic basmati rice with spiced chicken and herbs', 
+        image: 'https://images.unsplash.com/photo-1563379091339-03246963d96c?w=300&h=200&fit=crop', 
+        category: 'Main Course' 
+      },
+      { 
+        id: '3', 
+        name: 'Paneer Tikka', 
+        price: 249, 
+        description: 'Grilled cottage cheese marinated in spices', 
+        image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=300&h=200&fit=crop', 
+        category: 'Appetizer' 
+      },
+      { 
+        id: '4', 
+        name: 'Dal Makhani', 
+        price: 179, 
+        description: 'Rich and creamy black lentils cooked with butter', 
+        image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop', 
+        category: 'Main Course' 
+      }
     ]
   },
   {
@@ -49,10 +79,40 @@ const mockRestaurants: Restaurant[] = [
     rating: 4.2,
     deliveryTime: '25-35 min',
     country: 'america',
-    image: '/placeholder.svg',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
     menu: [
-      { id: '3', name: 'Classic Burger', price: 12.99, description: 'Beef patty with fresh toppings', image: '/placeholder.svg', category: 'Main Course' },
-      { id: '4', name: 'Caesar Salad', price: 8.99, description: 'Fresh romaine with caesar dressing', image: '/placeholder.svg', category: 'Salads' },
+      { 
+        id: '5', 
+        name: 'Classic Burger', 
+        price: 12.99, 
+        description: 'Beef patty with lettuce, tomato, cheese and special sauce', 
+        image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop', 
+        category: 'Main Course' 
+      },
+      { 
+        id: '6', 
+        name: 'Caesar Salad', 
+        price: 8.99, 
+        description: 'Fresh romaine lettuce with caesar dressing and croutons', 
+        image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop', 
+        category: 'Salads' 
+      },
+      { 
+        id: '7', 
+        name: 'Buffalo Wings', 
+        price: 10.99, 
+        description: 'Spicy chicken wings served with ranch dipping sauce', 
+        image: 'https://images.unsplash.com/photo-1608039755401-742074f0548d?w=300&h=200&fit=crop', 
+        category: 'Appetizer' 
+      },
+      { 
+        id: '8', 
+        name: 'Pepperoni Pizza', 
+        price: 14.99, 
+        description: 'Classic pizza with pepperoni and mozzarella cheese', 
+        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop', 
+        category: 'Main Course' 
+      }
     ]
   },
 ];
