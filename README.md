@@ -1,10 +1,8 @@
-<<<<<<< HEAD
-# Welcome to your Lovable project
-![homepage](./public/Screenshot%202025-05-28%20231614.png)
-=======
-# Welcome to project Spice-Nut
 
->>>>>>> 72c8daa037859f256fe8c94fc2c0761eb26b946d
+# Welcome to My project: FoodieOrder
+![homepage](./public/Screenshot%202025-05-28%20231614.png)
+
+
 ## Project info
 
 This is a fully responsive and scalable frontend web application developed using modern technologies such as React, TypeScript, Vite, Tailwind CSS, and shadcn-ui. It offers a high-performance development experience with fast build times and instant preview capabilities.
@@ -43,11 +41,3 @@ This project is built with:
 - Tailwind CSS
 
 
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
