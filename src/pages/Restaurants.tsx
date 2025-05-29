@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { Star, Plus, Minus, ShoppingCart, Sparkles, Heart, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MenuItem {
@@ -317,6 +317,7 @@ const Restaurants = () => {
   const { user } = useAuth();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [cart, setCart] = useState<{ [key: string]: number }>({});
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   const filteredRestaurants = mockRestaurants.filter(restaurant => 
     restaurant.country === user?.country
@@ -327,7 +328,13 @@ const Restaurants = () => {
       ...prev,
       [itemId]: (prev[itemId] || 0) + 1
     }));
-    toast.success('Item added to cart!');
+    toast.success('Item added to cart! 🎉', {
+      style: {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        border: 'none'
+      }
+    });
   };
 
   const removeFromCart = (itemId: string) => {
@@ -339,6 +346,20 @@ const Restaurants = () => {
         delete newCart[itemId];
       }
       return newCart;
+    });
+  };
+
+  const toggleFavorite = (itemId: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(itemId)) {
+        newFavorites.delete(itemId);
+        toast.success('Removed from favorites 💔');
+      } else {
+        newFavorites.add(itemId);
+        toast.success('Added to favorites ❤️');
+      }
+      return newFavorites;
     });
   };
 
@@ -355,46 +376,76 @@ const Restaurants = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-4 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Restaurants in {user?.country?.charAt(0).toUpperCase()}{user?.country?.slice(1)}
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base">Discover amazing food from local restaurants</p>
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+      </div>
+      
+      <div className="container mx-auto px-4 py-4 sm:py-8 relative">
+        <div className="mb-6 sm:mb-8 text-center animate-fadeInUp">
+          <div className="relative inline-block">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-2 gradient-text">
+              Restaurants in {user?.country?.charAt(0).toUpperCase()}{user?.country?.slice(1)}
+            </h1>
+            <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-400 animate-spin" />
+          </div>
+          <p className="text-white/80 text-sm sm:text-lg max-w-2xl mx-auto">
+            Discover amazing food from local restaurants ✨
+          </p>
+          <div className="mt-4 flex justify-center space-x-2">
+            <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+          </div>
         </div>
 
         {!selectedRestaurant ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {filteredRestaurants.map((restaurant) => (
-              <Card key={restaurant.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader className="pb-3">
-                  <img 
-                    src={restaurant.image} 
-                    alt={restaurant.name}
-                    className="w-full h-36 sm:h-48 object-cover rounded-lg mb-3 sm:mb-4"
-                  />
+            {filteredRestaurants.map((restaurant, index) => (
+              <Card key={restaurant.id} className="restaurant-card animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+                <CardHeader className="pb-3 relative">
+                  <div className="relative overflow-hidden rounded-lg mb-3 sm:mb-4">
+                    <img 
+                      src={restaurant.image} 
+                      alt={restaurant.name}
+                      className="w-full h-36 sm:h-48 object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-gradient-to-r from-green-400 to-blue-500 text-white border-0 animate-pulse">
+                        Open
+                      </Badge>
+                    </div>
+                  </div>
                   <CardTitle className="flex items-center justify-between text-base sm:text-lg">
-                    {restaurant.name}
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current" />
-                      <span className="text-xs sm:text-sm">{restaurant.rating}</span>
+                    <span className="gradient-text">{restaurant.name}</span>
+                    <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-white fill-current animate-pulse" />
+                      <span className="text-xs sm:text-sm text-white font-bold">{restaurant.rating}</span>
                     </div>
                   </CardTitle>
                   <CardDescription>
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-xs">{restaurant.cuisine}</Badge>
-                      <span className="text-xs sm:text-sm text-gray-500">{restaurant.deliveryTime}</span>
+                      <Badge variant="secondary" className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 text-white border-0">
+                        {restaurant.cuisine}
+                      </Badge>
+                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500">
+                        <Clock className="h-3 w-3" />
+                        <span>{restaurant.deliveryTime}</span>
+                      </div>
                     </div>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <Button 
                     onClick={() => setSelectedRestaurant(restaurant)}
-                    className="w-full bg-orange-600 hover:bg-orange-700 text-sm sm:text-base"
+                    className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-sm sm:text-base transition-all duration-300 hover:scale-105 neon-glow"
                   >
+                    <Sparkles className="h-4 w-4 mr-2" />
                     View Menu
                   </Button>
                 </CardContent>
@@ -407,52 +458,69 @@ const Restaurants = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setSelectedRestaurant(null)}
-                className="self-start text-sm sm:text-base"
+                className="self-start text-sm sm:text-base glass-effect border-white/30 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105"
               >
                 ← Back to Restaurants
               </Button>
               
               {getTotalItems() > 0 && (
-                <div className="flex items-center space-x-2 sm:space-x-4 bg-orange-100 px-3 sm:px-4 py-2 rounded-lg">
-                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
-                  <span className="font-medium text-sm sm:text-base">{getTotalItems()} items</span>
-                  <span className="font-bold text-sm sm:text-base">
+                <div className="flex items-center space-x-2 sm:space-x-4 glass-effect px-3 sm:px-4 py-2 rounded-xl animate-bounceIn">
+                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-400 animate-bounce" />
+                  <span className="font-medium text-sm sm:text-base text-white">{getTotalItems()} items</span>
+                  <span className="font-bold text-sm sm:text-base text-yellow-300 animate-pulse">
                     {user?.country === 'india' ? '₹' : '$'}{getTotalPrice().toFixed(2)}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold mb-2">{selectedRestaurant.name}</h2>
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-600">
-                <Badge variant="secondary" className="text-xs">{selectedRestaurant.cuisine}</Badge>
+            <div className="mb-4 sm:mb-6 text-center animate-slideInLeft">
+              <h2 className="text-xl sm:text-3xl font-bold mb-2 gradient-text">{selectedRestaurant.name}</h2>
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-white/80">
+                <Badge className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 border-0">
+                  {selectedRestaurant.cuisine}
+                </Badge>
                 <div className="flex items-center space-x-1">
-                  <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current" />
+                  <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current animate-pulse" />
                   <span className="text-xs sm:text-sm">{selectedRestaurant.rating}</span>
                 </div>
-                <span className="text-xs sm:text-sm">{selectedRestaurant.deliveryTime}</span>
+                <div className="flex items-center space-x-1">
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
+                  <span className="text-xs sm:text-sm">{selectedRestaurant.deliveryTime}</span>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {selectedRestaurant.menu.map((item) => (
-                <Card key={item.id}>
-                  <CardHeader className="pb-3">
-                    <img 
-                      src={item.image} 
-                      alt={item.name}
-                      className="w-full h-24 sm:h-32 object-cover rounded-lg mb-2"
-                    />
-                    <CardTitle className="text-base sm:text-lg">{item.name}</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">{item.description}</CardDescription>
+              {selectedRestaurant.menu.map((item, index) => (
+                <Card key={item.id} className="food-card animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+                  <CardHeader className="pb-3 relative">
+                    <div className="relative overflow-hidden rounded-lg mb-2">
+                      <img 
+                        src={item.image} 
+                        alt={item.name}
+                        className="w-full h-24 sm:h-32 object-cover transition-transform duration-500 hover:scale-110"
+                      />
+                      <button
+                        onClick={() => toggleFavorite(item.id)}
+                        className="absolute top-2 right-2 p-1 rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-110"
+                      >
+                        <Heart 
+                          className={`h-4 w-4 ${favorites.has(item.id) ? 'fill-red-500 text-red-500' : 'text-white'} transition-colors`}
+                        />
+                      </button>
+                    </div>
+                    <CardTitle className="text-base sm:text-lg gradient-text">{item.name}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm text-gray-600">{item.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <span className="text-lg sm:text-xl font-bold text-orange-600">
+                      <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
                         {user?.country === 'india' ? '₹' : '$'}{item.price}
                       </span>
-                      <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                      <Badge className="text-xs bg-gradient-to-r from-indigo-400 to-purple-500 text-white border-0">
+                        {item.category}
+                      </Badge>
                     </div>
                     
                     <div className="flex items-center justify-between">
@@ -462,16 +530,16 @@ const Restaurants = () => {
                             size="sm" 
                             variant="outline"
                             onClick={() => removeFromCart(item.id)}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 border-red-300 text-red-500 hover:bg-red-50 transition-all duration-300 hover:scale-110"
                           >
                             <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
-                          <span className="font-medium text-sm sm:text-base min-w-[20px] text-center">{cart[item.id]}</span>
+                          <span className="font-medium text-sm sm:text-base min-w-[20px] text-center animate-pulse">{cart[item.id]}</span>
                           <Button 
                             size="sm" 
                             variant="outline"
                             onClick={() => addToCart(item.id)}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 border-green-300 text-green-500 hover:bg-green-50 transition-all duration-300 hover:scale-110"
                           >
                             <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
@@ -480,7 +548,7 @@ const Restaurants = () => {
                         <Button 
                           size="sm"
                           onClick={() => addToCart(item.id)}
-                          className="bg-orange-600 hover:bg-orange-700 text-xs sm:text-sm"
+                          className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-xs sm:text-sm transition-all duration-300 hover:scale-105"
                         >
                           <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                           Add to Cart
