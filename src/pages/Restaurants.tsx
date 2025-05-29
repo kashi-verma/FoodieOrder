@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../contexts/AuthContext';
@@ -126,7 +127,7 @@ const mockRestaurants: Restaurant[] = [
         name: 'Dosa', 
         price: 99, 
         description: 'Crispy South Indian crepe served with coconut chutney', 
-        image: 'https://images.unsplash.com/photo-1694672023072-7c2e3b6b3b5c?w=300&h=200&fit=crop', 
+        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop', 
         category: 'South Indian' 
       }
     ]
@@ -282,7 +283,7 @@ const mockRestaurants: Restaurant[] = [
         name: 'Mutton Biryani', 
         price: 399, 
         description: 'Fragrant basmati rice layered with tender mutton pieces', 
-        image: 'https://images.unsplash.com/photo-1563379091339-03246963d96c?w=300&h=200&fit=crop', 
+        image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=300&h=200&fit=crop', 
         category: 'Biryani' 
       },
       { 
@@ -298,7 +299,7 @@ const mockRestaurants: Restaurant[] = [
         name: 'Hyderabadi Haleem', 
         price: 249, 
         description: 'Slow-cooked lentil and meat stew', 
-        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop', 
+        image: 'https://images.unsplash.com/photo-1574653453002-1ad2b67d5d0f?w=300&h=200&fit=crop', 
         category: 'Traditional' 
       },
       { 
