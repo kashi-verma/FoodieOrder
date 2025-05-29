@@ -43,6 +43,18 @@ const mockOrders: Order[] = [
     status: 'delivered',
     createdAt: '2024-01-14T18:15:00Z',
     estimatedDelivery: 'Delivered'
+  },
+  {
+    id: '3',
+    restaurantName: 'Mumbai Street Kitchen',
+    items: [
+      { name: 'Vada Pav', quantity: 3, price: 89 },
+      { name: 'Pav Bhaji', quantity: 1, price: 129 }
+    ],
+    total: 396,
+    status: 'confirmed',
+    createdAt: '2024-01-16T14:20:00Z',
+    estimatedDelivery: '25 minutes'
   }
 ];
 
@@ -87,22 +99,22 @@ const Orders = () => {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
-            <p className="text-gray-600">Track and manage your food orders</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
+            <p className="text-gray-600 text-sm sm:text-base">Track and manage your food orders</p>
           </div>
           
           {canCheckout() && (
             <Dialog open={showCheckoutDialog} onOpenChange={setShowCheckoutDialog}>
               <DialogTrigger asChild>
-                <Button className="bg-orange-600 hover:bg-orange-700">
+                <Button className="bg-orange-600 hover:bg-orange-700 text-sm sm:text-base">
                   <CreditCard className="h-4 w-4 mr-2" />
                   New Order Checkout
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="mx-4 max-w-md sm:max-w-lg">
                 <DialogHeader>
                   <DialogTitle>Checkout & Payment</DialogTitle>
                 </DialogHeader>
@@ -129,28 +141,28 @@ const Orders = () => {
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {orders.map((order) => (
             <Card key={order.id}>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center space-x-2">
-                      <span>Order #{order.id}</span>
-                      <Badge className={getStatusColor(order.status)}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                      <span className="text-base sm:text-lg">Order #{order.id}</span>
+                      <Badge className={`${getStatusColor(order.status)} text-xs w-fit`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </Badge>
                     </CardTitle>
-                    <CardDescription>{order.restaurantName}</CardDescription>
+                    <CardDescription className="text-sm sm:text-base">{order.restaurantName}</CardDescription>
                   </div>
                   
-                  <div className="text-right">
-                    <div className="flex items-center space-x-1 text-sm text-gray-500 mb-1">
-                      <Clock className="h-4 w-4" />
+                  <div className="flex flex-row sm:flex-col sm:text-right gap-3 sm:gap-1">
+                    <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500">
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span>{order.estimatedDelivery}</span>
                     </div>
-                    <div className="flex items-center space-x-1 text-lg font-bold text-orange-600">
-                      <DollarSign className="h-4 w-4" />
+                    <div className="flex items-center space-x-1 text-base sm:text-lg font-bold text-orange-600">
+                      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span>{user?.country === 'india' ? '₹' : '$'}{order.total}</span>
                     </div>
                   </div>
@@ -160,15 +172,15 @@ const Orders = () => {
               <CardContent>
                 <div className="space-y-2 mb-4">
                   {order.items.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between text-sm">
+                    <div key={index} className="flex items-center justify-between text-xs sm:text-sm">
                       <span>{item.name} x {item.quantity}</span>
                       <span>{user?.country === 'india' ? '₹' : '$'}{item.price * item.quantity}</span>
                     </div>
                   ))}
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <span className="text-xs sm:text-sm text-gray-500">
                     Ordered on {new Date(order.createdAt).toLocaleDateString()}
                   </span>
                   
@@ -177,8 +189,9 @@ const Orders = () => {
                       variant="destructive" 
                       size="sm"
                       onClick={() => cancelOrder(order.id)}
+                      className="text-xs sm:text-sm self-start sm:self-auto"
                     >
-                      <X className="h-4 w-4 mr-1" />
+                      <X className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                       Cancel Order
                     </Button>
                   )}
@@ -189,9 +202,9 @@ const Orders = () => {
         </div>
 
         {user?.role === 'member' && (
-          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-            <h3 className="text-lg font-medium text-blue-900 mb-2">Limited Access</h3>
-            <p className="text-blue-700">
+          <div className="mt-6 sm:mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 text-center">
+            <h3 className="text-base sm:text-lg font-medium text-blue-900 mb-2">Limited Access</h3>
+            <p className="text-sm sm:text-base text-blue-700">
               As a Member, you can view orders and add items to cart, but cannot checkout or cancel orders. 
               Please contact an Admin or Manager for assistance.
             </p>
