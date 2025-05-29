@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -314,38 +315,33 @@ const mockRestaurants: Restaurant[] = [
 
 const Restaurants = () => {
   const { user } = useAuth();
+  const { addToCart, updateQuantity, cart, getTotalItems, getTotalPrice } = useCart();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
-  const [cart, setCart] = useState<{ [key: string]: number }>({});
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   const filteredRestaurants = mockRestaurants.filter(restaurant => 
     restaurant.country === user?.country
   );
 
-  const addToCart = (itemId: string) => {
-    setCart(prev => ({
-      ...prev,
-      [itemId]: (prev[itemId] || 0) + 1
-    }));
-    toast.success('Item added to cart! 🎉', {
-      style: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        border: 'none'
-      }
+  const handleAddToCart = (item: MenuItem) => {
+    if (!selectedRestaurant) return;
+    
+    addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      restaurantId: selectedRestaurant.id,
+      restaurantName: selectedRestaurant.name
     });
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCart(prev => {
-      const newCart = { ...prev };
-      if (newCart[itemId] > 1) {
-        newCart[itemId]--;
-      } else {
-        delete newCart[itemId];
-      }
-      return newCart;
-    });
+  const handleUpdateQuantity = (itemId: string, newQuantity: number) => {
+    updateQuantity(itemId, newQuantity);
+  };
+
+  const getItemQuantity = (itemId: string) => {
+    const cartItem = cart.find(item => item.id === itemId);
+    return cartItem ? cartItem.quantity : 0;
   };
 
   const toggleFavorite = (itemId: string) => {
@@ -362,31 +358,18 @@ const Restaurants = () => {
     });
   };
 
-  const getTotalItems = () => {
-    return Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
-  };
-
-  const getTotalPrice = () => {
-    if (!selectedRestaurant) return 0;
-    return Object.entries(cart).reduce((total, [itemId, quantity]) => {
-      const item = selectedRestaurant.menu.find(m => m.id === itemId);
-      return total + (item ? item.price * quantity : 0);
-    }, 0);
-  };
-
   const handleBackToRestaurants = () => {
     setSelectedRestaurant(null);
-    setCart({}); // Clear cart when going back
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-blue-900">
       <Navigation />
       
-      {/* Animated Background */}
+      {/* Subtle Background Pattern */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%259C92AC%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-blue-900"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
       </div>
       
       <div className="container mx-auto px-4 py-4 sm:py-8 relative">
@@ -395,16 +378,10 @@ const Restaurants = () => {
             <h1 className="text-3xl sm:text-5xl font-bold mb-2 gradient-text">
               Restaurants in {user?.country?.charAt(0).toUpperCase()}{user?.country?.slice(1)}
             </h1>
-            <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-400 animate-spin" />
           </div>
-          <p className="text-white/80 dark:text-gray-300 text-sm sm:text-lg max-w-2xl mx-auto">
-            Discover amazing food from local restaurants ✨
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto">
+            Discover delicious food from local restaurants ✨
           </p>
-          <div className="mt-4 flex justify-center space-x-2">
-            <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-          </div>
         </div>
 
         {!selectedRestaurant ? (
@@ -418,23 +395,23 @@ const Restaurants = () => {
                       alt={restaurant.name}
                       className="w-full h-36 sm:h-48 object-cover transition-transform duration-500 hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     <div className="absolute top-2 right-2">
-                      <Badge className="bg-gradient-to-r from-green-400 to-blue-500 text-white border-0 animate-pulse">
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
                         Open
                       </Badge>
                     </div>
                   </div>
                   <CardTitle className="flex items-center justify-between text-base sm:text-lg">
                     <span className="gradient-text">{restaurant.name}</span>
-                    <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 px-2 py-1 rounded-full">
-                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-white fill-current animate-pulse" />
+                    <div className="flex items-center space-x-1 bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-white fill-current" />
                       <span className="text-xs sm:text-sm text-white font-bold">{restaurant.rating}</span>
                     </div>
                   </CardTitle>
                   <CardDescription>
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 text-white border-0">
+                      <Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0">
                         {restaurant.cuisine}
                       </Badge>
                       <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
@@ -447,9 +424,8 @@ const Restaurants = () => {
                 <CardContent className="pt-0">
                   <Button 
                     onClick={() => setSelectedRestaurant(restaurant)}
-                    className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-sm sm:text-base transition-all duration-300 hover:scale-105 neon-glow"
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-sm sm:text-base transition-all duration-300 hover:scale-105 subtle-glow"
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
                     View Menu
                   </Button>
                 </CardContent>
@@ -462,7 +438,7 @@ const Restaurants = () => {
               <Button 
                 variant="outline" 
                 onClick={handleBackToRestaurants}
-                className="self-start text-sm sm:text-base glass-effect border-white/30 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                className="self-start text-sm sm:text-base glass-effect border-slate-300/50 dark:border-white/30 text-slate-700 dark:text-white hover:bg-slate-100/50 dark:hover:bg-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Restaurants
@@ -470,11 +446,11 @@ const Restaurants = () => {
               
               {getTotalItems() > 0 && (
                 <div className="flex items-center space-x-2 sm:space-x-4 glass-effect px-3 sm:px-4 py-2 rounded-xl animate-bounceIn">
-                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-400 animate-bounce" />
-                  <span className="font-medium text-sm sm:text-base text-white">
+                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
+                  <span className="font-medium text-sm sm:text-base text-slate-700 dark:text-white">
                     {getTotalItems()} items
                   </span>
-                  <span className="font-bold text-sm sm:text-base text-yellow-300 animate-pulse">
+                  <span className="font-bold text-sm sm:text-base text-blue-600 dark:text-blue-400">
                     {user?.country === 'india' ? '₹' : '$'}{getTotalPrice().toFixed(2)}
                   </span>
                 </div>
@@ -483,88 +459,92 @@ const Restaurants = () => {
 
             <div className="mb-4 sm:mb-6 text-center animate-slideInLeft">
               <h2 className="text-xl sm:text-3xl font-bold mb-2 gradient-text">{selectedRestaurant.name}</h2>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-white/80 dark:text-gray-300">
-                <Badge className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 border-0">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-slate-600 dark:text-slate-300">
+                <Badge className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 border-0 text-white">
                   {selectedRestaurant.cuisine}
                 </Badge>
                 <div className="flex items-center space-x-1">
-                  <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current animate-pulse" />
+                  <Star className="h-3 w-3 sm:h-4 sm:w-4 text-amber-400 fill-current" />
                   <span className="text-xs sm:text-sm">{selectedRestaurant.rating}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500" />
                   <span className="text-xs sm:text-sm">{selectedRestaurant.deliveryTime}</span>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {selectedRestaurant.menu.map((item, index) => (
-                <Card key={item.id} className="food-card animate-fadeInUp bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" style={{animationDelay: `${index * 0.1}s`}}>
-                  <CardHeader className="pb-3 relative">
-                    <div className="relative overflow-hidden rounded-lg mb-2">
-                      <img 
-                        src={item.image} 
-                        alt={item.name}
-                        className="w-full h-24 sm:h-32 object-cover transition-transform duration-500 hover:scale-110"
-                      />
-                      <button
-                        onClick={() => toggleFavorite(item.id)}
-                        className="absolute top-2 right-2 p-1 rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-110"
-                      >
-                        <Heart 
-                          className={`h-4 w-4 ${favorites.has(item.id) ? 'fill-red-500 text-red-500' : 'text-white'} transition-colors`}
+              {selectedRestaurant.menu.map((item, index) => {
+                const quantity = getItemQuantity(item.id);
+                
+                return (
+                  <Card key={item.id} className="food-card animate-fadeInUp bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" style={{animationDelay: `${index * 0.1}s`}}>
+                    <CardHeader className="pb-3 relative">
+                      <div className="relative overflow-hidden rounded-lg mb-2">
+                        <img 
+                          src={item.image} 
+                          alt={item.name}
+                          className="w-full h-24 sm:h-32 object-cover transition-transform duration-500 hover:scale-110"
                         />
-                      </button>
-                    </div>
-                    <CardTitle className="text-base sm:text-lg gradient-text">{item.name}</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{item.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
-                        {user?.country === 'india' ? '₹' : '$'}{item.price}
-                      </span>
-                      <Badge className="text-xs bg-gradient-to-r from-indigo-400 to-purple-500 text-white border-0">
-                        {item.category}
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      {cart[item.id] ? (
-                        <div className="flex items-center space-x-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => removeFromCart(item.id)}
-                            className="h-8 w-8 p-0 border-red-300 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 hover:scale-110"
-                          >
-                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
-                          </Button>
-                          <span className="font-medium text-sm sm:text-base min-w-[20px] text-center animate-pulse text-gray-900 dark:text-white">{cart[item.id]}</span>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => addToCart(item.id)}
-                            className="h-8 w-8 p-0 border-green-300 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-300 hover:scale-110"
-                          >
-                            <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button 
-                          size="sm"
-                          onClick={() => addToCart(item.id)}
-                          className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-xs sm:text-sm transition-all duration-300 hover:scale-105"
+                        <button
+                          onClick={() => toggleFavorite(item.id)}
+                          className="absolute top-2 right-2 p-1 rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-110"
                         >
-                          <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          Add to Cart
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                          <Heart 
+                            className={`h-4 w-4 ${favorites.has(item.id) ? 'fill-red-500 text-red-500' : 'text-white'} transition-colors`}
+                          />
+                        </button>
+                      </div>
+                      <CardTitle className="text-base sm:text-lg gradient-text">{item.name}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{item.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                          {user?.country === 'india' ? '₹' : '$'}{item.price}
+                        </span>
+                        <Badge className="text-xs bg-gradient-to-r from-slate-500 to-slate-600 text-white border-0">
+                          {item.category}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        {quantity > 0 ? (
+                          <div className="flex items-center space-x-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleUpdateQuantity(item.id, quantity - 1)}
+                              className="h-8 w-8 p-0 border-red-300 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 hover:scale-110"
+                            >
+                              <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                            </Button>
+                            <span className="font-medium text-sm sm:text-base min-w-[20px] text-center text-gray-900 dark:text-white">{quantity}</span>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleUpdateQuantity(item.id, quantity + 1)}
+                              className="h-8 w-8 p-0 border-green-300 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-300 hover:scale-110"
+                            >
+                              <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button 
+                            size="sm"
+                            onClick={() => handleAddToCart(item)}
+                            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-xs sm:text-sm transition-all duration-300 hover:scale-105"
+                          >
+                            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            Add to Cart
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}

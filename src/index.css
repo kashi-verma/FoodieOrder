@@ -73,18 +73,18 @@
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     min-height: 100vh;
   }
 
   .dark body {
-    background: linear-gradient(135deg, #2d1b69 0%, #1a1a2e 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   }
 }
 
 @layer components {
   .food-card {
-    @apply relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105;
+    @apply relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02];
     background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   }
   
@@ -94,7 +94,7 @@
   
   .food-card::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-orange-400/10 to-pink-500/10 opacity-0 transition-opacity duration-300;
+    @apply absolute inset-0 bg-gradient-to-r from-blue-400/5 to-purple-500/5 opacity-0 transition-opacity duration-300;
   }
   
   .food-card:hover::before {
@@ -102,9 +102,8 @@
   }
 
   .restaurant-card {
-    @apply relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-xl transition-all duration-500 hover:shadow-2xl;
+    @apply relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 hover:shadow-xl;
     background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
-    transform-style: preserve-3d;
   }
   
   .dark .restaurant-card {
@@ -112,7 +111,7 @@
   }
   
   .restaurant-card:hover {
-    transform: translateY(-8px) rotateX(5deg);
+    transform: translateY(-4px);
   }
 
   .floating-animation {
@@ -136,28 +135,89 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent;
   }
 
   .dark .gradient-text {
-    @apply bg-gradient-to-r from-orange-400 via-pink-400 to-purple-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600 bg-clip-text text-transparent;
   }
 
   .glass-effect {
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .dark .glass-effect {
     backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .neon-glow {
-    box-shadow: 0 0 20px #ff6b35, 0 0 40px #ff6b35, 0 0 60px #ff6b35;
+  .subtle-glow {
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+  }
+
+  .dark .subtle-glow {
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
   }
 }
 
-/* ... keep existing code (keyframes and animations) */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-bounceIn {
+  animation: bounceIn 0.6s ease-out;
+}
