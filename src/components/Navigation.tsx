@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { 
   Home, 
@@ -12,11 +13,14 @@ import {
   User,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -37,7 +41,7 @@ const Navigation: React.FC = () => {
   if (!user) return null;
 
   return (
-    <nav className="relative bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 shadow-2xl border-b border-white/20">
+    <nav className="relative bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 dark:from-purple-800 dark:via-blue-800 dark:to-indigo-800 shadow-2xl border-b border-white/20">
       <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -82,8 +86,17 @@ const Navigation: React.FC = () => {
             </div>
           </div>
           
-          {/* Desktop User Info and Logout */}
+          {/* Desktop User Info and Controls */}
           <div className="hidden md:flex items-center space-x-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTheme}
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30 hover:scale-105 transition-all duration-300"
+            >
+              {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            
             <div className="flex items-center space-x-2 text-sm text-white/90 glass-effect px-3 py-2 rounded-full">
               <User className="h-4 w-4 animate-pulse" />
               <span>{user.name}</span>
@@ -107,7 +120,16 @@ const Navigation: React.FC = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTheme}
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+            >
+              {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            
             <button
               onClick={toggleMobileMenu}
               className="inline-flex items-center justify-center p-2 rounded-lg text-white hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/50 transition-all duration-300"

@@ -1,12 +1,10 @@
-
-
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Plus, Minus, ShoppingCart, Sparkles, Heart, Clock } from 'lucide-react';
+import { Star, Plus, Minus, ShoppingCart, Sparkles, Heart, Clock, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MenuItem {
@@ -376,16 +374,19 @@ const Restaurants = () => {
     }, 0);
   };
 
+  const handleBackToRestaurants = () => {
+    setSelectedRestaurant(null);
+    setCart({}); // Clear cart when going back
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900">
       <Navigation />
       
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%259C92AC%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
       </div>
       
       <div className="container mx-auto px-4 py-4 sm:py-8 relative">
@@ -396,7 +397,7 @@ const Restaurants = () => {
             </h1>
             <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-400 animate-spin" />
           </div>
-          <p className="text-white/80 text-sm sm:text-lg max-w-2xl mx-auto">
+          <p className="text-white/80 dark:text-gray-300 text-sm sm:text-lg max-w-2xl mx-auto">
             Discover amazing food from local restaurants ✨
           </p>
           <div className="mt-4 flex justify-center space-x-2">
@@ -409,7 +410,7 @@ const Restaurants = () => {
         {!selectedRestaurant ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredRestaurants.map((restaurant, index) => (
-              <Card key={restaurant.id} className="restaurant-card animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+              <Card key={restaurant.id} className="restaurant-card animate-fadeInUp bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" style={{animationDelay: `${index * 0.1}s`}}>
                 <CardHeader className="pb-3 relative">
                   <div className="relative overflow-hidden rounded-lg mb-3 sm:mb-4">
                     <img 
@@ -436,7 +437,7 @@ const Restaurants = () => {
                       <Badge variant="secondary" className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 text-white border-0">
                         {restaurant.cuisine}
                       </Badge>
-                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500">
+                      <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                         <Clock className="h-3 w-3" />
                         <span>{restaurant.deliveryTime}</span>
                       </div>
@@ -460,16 +461,19 @@ const Restaurants = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4">
               <Button 
                 variant="outline" 
-                onClick={() => setSelectedRestaurant(null)}
-                className="self-start text-sm sm:text-base glass-effect border-white/30 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105"
+                onClick={handleBackToRestaurants}
+                className="self-start text-sm sm:text-base glass-effect border-white/30 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
               >
-                ← Back to Restaurants
+                <ArrowLeft className="h-4 w-4" />
+                Back to Restaurants
               </Button>
               
               {getTotalItems() > 0 && (
                 <div className="flex items-center space-x-2 sm:space-x-4 glass-effect px-3 sm:px-4 py-2 rounded-xl animate-bounceIn">
                   <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-400 animate-bounce" />
-                  <span className="font-medium text-sm sm:text-base text-white">{getTotalItems()} items</span>
+                  <span className="font-medium text-sm sm:text-base text-white">
+                    {getTotalItems()} items
+                  </span>
                   <span className="font-bold text-sm sm:text-base text-yellow-300 animate-pulse">
                     {user?.country === 'india' ? '₹' : '$'}{getTotalPrice().toFixed(2)}
                   </span>
@@ -479,7 +483,7 @@ const Restaurants = () => {
 
             <div className="mb-4 sm:mb-6 text-center animate-slideInLeft">
               <h2 className="text-xl sm:text-3xl font-bold mb-2 gradient-text">{selectedRestaurant.name}</h2>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-white/80">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-white/80 dark:text-gray-300">
                 <Badge className="text-xs bg-gradient-to-r from-purple-400 to-pink-500 border-0">
                   {selectedRestaurant.cuisine}
                 </Badge>
@@ -496,7 +500,7 @@ const Restaurants = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {selectedRestaurant.menu.map((item, index) => (
-                <Card key={item.id} className="food-card animate-fadeInUp" style={{animationDelay: `${index * 0.1}s`}}>
+                <Card key={item.id} className="food-card animate-fadeInUp bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" style={{animationDelay: `${index * 0.1}s`}}>
                   <CardHeader className="pb-3 relative">
                     <div className="relative overflow-hidden rounded-lg mb-2">
                       <img 
@@ -514,7 +518,7 @@ const Restaurants = () => {
                       </button>
                     </div>
                     <CardTitle className="text-base sm:text-lg gradient-text">{item.name}</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm text-gray-600">{item.description}</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{item.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -533,16 +537,16 @@ const Restaurants = () => {
                             size="sm" 
                             variant="outline"
                             onClick={() => removeFromCart(item.id)}
-                            className="h-8 w-8 p-0 border-red-300 text-red-500 hover:bg-red-50 transition-all duration-300 hover:scale-110"
+                            className="h-8 w-8 p-0 border-red-300 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 hover:scale-110"
                           >
                             <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
-                          <span className="font-medium text-sm sm:text-base min-w-[20px] text-center animate-pulse">{cart[item.id]}</span>
+                          <span className="font-medium text-sm sm:text-base min-w-[20px] text-center animate-pulse text-gray-900 dark:text-white">{cart[item.id]}</span>
                           <Button 
                             size="sm" 
                             variant="outline"
                             onClick={() => addToCart(item.id)}
-                            className="h-8 w-8 p-0 border-green-300 text-green-500 hover:bg-green-50 transition-all duration-300 hover:scale-110"
+                            className="h-8 w-8 p-0 border-green-300 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-300 hover:scale-110"
                           >
                             <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>

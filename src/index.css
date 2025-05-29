@@ -76,12 +76,20 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
   }
+
+  .dark body {
+    background: linear-gradient(135deg, #2d1b69 0%, #1a1a2e 100%);
+  }
 }
 
 @layer components {
   .food-card {
-    @apply relative overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105;
+    @apply relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105;
     background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  }
+  
+  .dark .food-card {
+    background: linear-gradient(145deg, #374151 0%, #1f2937 100%);
   }
   
   .food-card::before {
@@ -94,9 +102,13 @@
   }
 
   .restaurant-card {
-    @apply relative overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-500 hover:shadow-2xl;
+    @apply relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-xl transition-all duration-500 hover:shadow-2xl;
     background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
     transform-style: preserve-3d;
+  }
+  
+  .dark .restaurant-card {
+    background: linear-gradient(145deg, #374151 0%, #1f2937 100%);
   }
   
   .restaurant-card:hover {
@@ -117,8 +129,18 @@
     animation: shimmer 2s infinite;
   }
 
+  .dark .shimmer {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
   .gradient-text {
     @apply bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  .dark .gradient-text {
+    @apply bg-gradient-to-r from-orange-400 via-pink-400 to-purple-500 bg-clip-text text-transparent;
   }
 
   .glass-effect {
@@ -127,76 +149,15 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
+  .dark .glass-effect {
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .neon-glow {
     box-shadow: 0 0 20px #ff6b35, 0 0 40px #ff6b35, 0 0 60px #ff6b35;
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.animate-slideInLeft {
-  animation: slideInLeft 0.8s ease-out;
-}
-
-.animate-bounceIn {
-  animation: bounceIn 0.6s ease-out;
-}
+/* ... keep existing code (keyframes and animations) */
